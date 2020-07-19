@@ -32,7 +32,71 @@ public class MainActivity extends AppCompatActivity {
 
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 //        getPosts();
-        getComments();
+//        getComments();
+        createPosts();
+    }
+
+    private void createPosts() {
+
+        Post post = new Post(23, "New Title", "New text");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("userId","23");
+        params.put("title","New Title");
+
+        Call<Post> call = jsonPlaceHolderApi.createPost(params);
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if (!response.isSuccessful()) {
+                    textViewResult.setText("Code: " + response.code());
+                }
+
+                Post post1 = response.body();
+
+                String content = "";
+                content += "Code: " + response.code() + "\n";
+                content += "ID: " + post1.getId() + "\n";
+                content += "User ID: " + post1.getUserid() + "\n";
+                content += "Title: " + post1.getTitle() + "\n";
+                content += "Text: " + post1.getText() + "\n";
+
+                textViewResult.setText(content);
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                textViewResult.setText(t.getMessage());
+            }
+        });
+
+//        Call<List<Post>> call = jsonPlaceHolderApi.createPost(new Integer[]{2, 3, 4}, "New Title", "New Text");
+//        call.enqueue(new Callback<List<Post>>() {
+//            @Override
+//            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+//                if (!response.isSuccessful()) {
+//                    textViewResult.setText("Code: " + response.code());
+//                }
+//
+//                List<Post> posts = response.body();
+//                for (Post post : posts
+//                ) {
+//                    String content = "";
+//                    content += "Code: " + response.code() + "\n";
+//                    content += "ID: " + post.getId() + "\n";
+//                    content += "User ID: " + post.getUserid() + "\n";
+//                    content += "Title: " + post.getTitle() + "\n";
+//                    content += "Text: " + post.getText() + "\n";
+//
+//                    textViewResult.append(content);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Post>> call, Throwable t) {
+//                textViewResult.setText(t.getMessage());
+//            }
+//        });
     }
 
     private void getComments() {
@@ -52,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 ) {
                     String content = "";
                     content += "ID: " + comment.getId() + "\nPostId: " + comment.getPostId() + "\nName: " +
-                            comment.getName() + "\nEmail: " + comment.getEmail() + "\nText: " + comment.getText()+"\n\n";
+                            comment.getName() + "\nEmail: " + comment.getEmail() + "\nText: " + comment.getText() + "\n\n";
 
                     textViewResult.append(content);
                 }
