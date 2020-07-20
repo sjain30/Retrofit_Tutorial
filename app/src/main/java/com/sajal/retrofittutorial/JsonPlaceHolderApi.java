@@ -57,6 +57,10 @@ public interface JsonPlaceHolderApi {
     @PUT("posts/{id}")
     Call<Post> putPost(@Path("id") int id, @Body Post post);
 
+    @FormUrlEncoded
+    @PATCH("posts/{id}")
+    Call<Post> putPost(@Path("id") int id, @FieldMap Map<String, String> fields);
+
     @PATCH("posts/{id}")
     Call<Post> patchPost(@Path("id") int id, @Body Post post);
 

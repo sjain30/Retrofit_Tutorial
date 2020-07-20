@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,15 +35,20 @@ public class MainActivity extends AppCompatActivity {
         //To force null values in patch request
         Gson gson = new GsonBuilder().serializeNulls().create();
 
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(loggingInterceptor).build();
+
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://jsonplaceholder.typicode.com/")
-                .addConverterFactory(GsonConverterFactory.create(gson)).build();
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient).build();
 
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 //        getPosts();
 //        getComments();
 //        createPosts();
-//        updatePost();
-        deletePost();
+        updatePost();
+//        deletePost();
     }
 
     private void deletePost() {
@@ -61,7 +68,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void updatePost() {
         Post post = new Post(12, null, "New Text");
-        Call<Post> call = jsonPlaceHolderApi.putPost(5, post);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("userId", "23");
+        params.put("title", "New Title");
+
+        Call<Post> call = jsonPlaceHolderApi.putPost(5, params);
         call.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
