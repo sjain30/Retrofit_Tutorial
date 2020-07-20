@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         params.put("userId", "23");
         params.put("title", "New Title");
 
-        Call<Post> call = jsonPlaceHolderApi.putPost(5, params);
+        Call<Post> call = jsonPlaceHolderApi.putPost("abc",5, post);
         call.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
